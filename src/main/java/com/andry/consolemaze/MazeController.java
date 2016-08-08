@@ -36,7 +36,8 @@ public class MazeController
 
     private void beginPolling()
     {
-        while (true)
+        boolean isGameOver = false;
+        while (!isGameOver)
         {
             try
             {
@@ -63,6 +64,8 @@ public class MazeController
                 }
                 model.step(playerDirection);
                 mazeView.draw();
+                isGameOver = model.isGameOver();
+
             } catch (IOException e)
             {
                 e.printStackTrace();

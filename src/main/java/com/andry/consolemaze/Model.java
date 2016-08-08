@@ -11,11 +11,13 @@ public class Model
 {
     private Tile[][] maze;
     private Hero hero;
+    private boolean isGameOver;
 
     public Model()
     {
         readMaze("/maze.txt");
         placeHero();
+        isGameOver = false;
     }
 
     private void placeHero()
@@ -79,7 +81,14 @@ public class Model
             Tile toStepOn = maze[nextPosition.getRow()][nextPosition.getColumn()];
             Direction actualDirection = toStepOn.onContact(maze, playerDirection);
             hero.step(actualDirection);
+            isGameOver = toStepOn.isGameOver();
         }
+
+    }
+
+    public boolean isGameOver()
+    {
+        return isGameOver;
     }
 
     public Tile[][] getMaze()

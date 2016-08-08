@@ -1,7 +1,10 @@
 package com.andry.consolemaze;
 
+import com.googlecode.lanterna.TerminalPosition;
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 
@@ -25,6 +28,7 @@ public class MazeView
         try
         {
             screen.startScreen();
+            //Why is this the way to hide the cursor???
             screen.setCursorPosition(null);
         } catch (IOException e)
         {
@@ -34,6 +38,27 @@ public class MazeView
 
     public void draw ()
     {
+        if (model.isGameOver())
+        {
+            if (!model.getHero().isDead())
+            {
+                TextGraphics textGraphics = screen.newTextGraphics();
+                textGraphics.fillRectangle(new TerminalPosition(5, 10), new TerminalSize(21, 5), new TextCharacter(' ', WALL_COLOR, TextColor.ANSI.CYAN));
+                textGraphics.putString(12, 12, "YOU WON!");
+                textGraphics.putString(0, 23, "Press any key to exit...");
+                try
+                {
+                    screen.refresh();
+                    screen.readInput();
+                    screen.stopScreen();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }
         for (int i = 0; i < model.getRows(); i++)
         {
             for (int j = 0; j < model.getColumns(); j++)
@@ -108,19 +133,19 @@ public class MazeView
                 Direction heroDirection = hero.getDirection();
                 if (heroDirection.equals(new Direction(Direction.Type.NORTH)))
                 {
-                    return new TextCharacter((char)0x25B2, HERO_COLOR, BACKGROUND);
+                    return new TextCharacter((char)0x02C4, HERO_COLOR, BACKGROUND);
                 }
                 if (heroDirection.equals(new Direction(Direction.Type.SOUTH)))
                 {
-                    return new TextCharacter((char)0x25BC, HERO_COLOR, BACKGROUND);
+                    return new TextCharacter((char)0x02C5, HERO_COLOR, BACKGROUND);
                 }
                 if (heroDirection.equals(new Direction(Direction.Type.EAST)))
                 {
-                    return new TextCharacter((char)0x25B6, HERO_COLOR, BACKGROUND);
+                    return new TextCharacter((char)0x02C3, HERO_COLOR, BACKGROUND);
                 }
                 if (heroDirection.equals(new Direction(Direction.Type.WEST)))
                 {
-                    return new TextCharacter((char)0x25C0, HERO_COLOR, BACKGROUND);
+                    return new TextCharacter((char)0x02C2, HERO_COLOR, BACKGROUND);
                 }
             default:
                 return null;
