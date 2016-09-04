@@ -1,4 +1,6 @@
-package com.andry.consolemaze;
+package com.andry.consolemaze.entities;
+
+import com.andry.consolemaze.Position;
 
 public class Goal extends Floor
 {

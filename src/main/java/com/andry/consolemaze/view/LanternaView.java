@@ -1,5 +1,10 @@
-package com.andry.consolemaze;
+package com.andry.consolemaze.view;
 
+import com.andry.consolemaze.Direction;
+import com.andry.consolemaze.model.Model;
+import com.andry.consolemaze.Position;
+import com.andry.consolemaze.entities.Hero;
+import com.andry.consolemaze.entities.MazeEntity;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
@@ -10,21 +15,18 @@ import com.googlecode.lanterna.screen.TerminalScreen;
 
 import java.io.IOException;
 
-import static com.andry.consolemaze.MazeEntity.DrawType.WALL;
-
-public class MazeView
+public class LanternaView extends MazeView
 {
     private TerminalScreen screen;
-    private Model model;
 
     private static final TextColor BACKGROUND = TextColor.Factory.fromString("#202020");
     private static final TextColor WALL_COLOR = TextColor.Factory.fromString("#A0A0A0");
     private static final TextColor HERO_COLOR = TextColor.Factory.fromString("#FFFF00");
 
-    public MazeView(TerminalScreen terminalScreen, Model model)
+    public LanternaView(TerminalScreen terminalScreen, Model model)
     {
+        super(model);
         screen = terminalScreen;
-        this.model = model;
         try
         {
             screen.startScreen();
@@ -38,37 +40,27 @@ public class MazeView
 
     public void draw ()
     {
-        if (model.isGameOver())
+        if (getModel().isGameOver())
         {
-            if (!model.getHero().isDead())
+            if (!getModel().getHero().isDead())
             {
                 TextGraphics textGraphics = screen.newTextGraphics();
                 textGraphics.fillRectangle(new TerminalPosition(5, 10), new TerminalSize(21, 5), new TextCharacter(' ', WALL_COLOR, TextColor.ANSI.CYAN));
                 textGraphics.putString(12, 12, "YOU WON!");
-                textGraphics.putString(0, 23, "Press any key to exit...");
-                try
-                {
-                    screen.refresh();
-                    screen.readInput();
-                    screen.stopScreen();
-                } catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
             }
 
 
         }
-        for (int i = 0; i < model.getRows(); i++)
+        for (int i = 0; i < getModel().getRows(); i++)
         {
-            for (int j = 0; j < model.getColumns(); j++)
+            for (int j = 0; j < getModel().getColumns(); j++)
             {
-                TextCharacter character = toTextCharacter(model.getMaze()[i][j]);
+                TextCharacter character = toTextCharacter(getModel().getMaze()[i][j]);
                 screen.setCharacter(j, i, character);
             }
         }
 
-        Hero hero = model.getHero();
+        Hero hero = getModel().getHero();
         Position heroPosition = hero.getPosition();
         TextCharacter heroCharacter = toTextCharacter(hero);
         screen.setCharacter(heroPosition.getColumn(), heroPosition.getRow(), heroCharacter);
@@ -129,7 +121,7 @@ public class MazeView
                         return null;
                 }
             case HERO:
-                Hero hero = model.getHero();
+                Hero hero = getModel().getHero();
                 Direction heroDirection = hero.getDirection();
                 if (heroDirection.equals(new Direction(Direction.Type.NORTH)))
                 {
@@ -152,27 +144,19 @@ public class MazeView
         }
     }
 
-    private char countAdjacentWalls(MazeEntity entity)
+    @Override
+    public void quit()
     {
-        char adjacentWalls = 0;
-        Position position = entity.getPosition();
-        if (position.getRow() > 0 && model.getMaze()[position.getRow() - 1][position.getColumn()].getDrawType() == WALL)
+        TextGraphics textGraphics = screen.newTextGraphics();
+        textGraphics.putString(0, 23, "Press any key to exit...");
+        try
         {
-            adjacentWalls |= 0b1000;
-        }
-        if (position.getRow() < (model.getRows() - 1) && model.getMaze()[position.getRow() + 1][position.getColumn()].getDrawType() == WALL)
+            screen.refresh();
+            screen.readInput();
+            screen.stopScreen();
+        } catch (IOException e)
         {
-            adjacentWalls |= 0b0100;
+            e.printStackTrace();
         }
-        if (position.getColumn() < (model.getColumns() - 1) && model.getMaze()[position.getRow()][position.getColumn() + 1].getDrawType() == WALL)
-        {
-            adjacentWalls |= 0b0010;
-        }
-        if (position.getColumn() > 0 && model.getMaze()[position.getRow()][position.getColumn()- 1].getDrawType() == WALL)
-        {
-            adjacentWalls |= 0b0001;
-        }
-        return adjacentWalls;
     }
-
 }

@@ -1,5 +1,7 @@
-package com.andry.consolemaze;
+package com.andry.consolemaze.entities;
 
+import com.andry.consolemaze.Direction;
+import com.andry.consolemaze.Position;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 

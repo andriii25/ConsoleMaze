@@ -1,8 +1,10 @@
-package com.andry.consolemaze;
+package com.andry.consolemaze.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import com.andry.consolemaze.Direction;
+import com.andry.consolemaze.Position;
+import com.andry.consolemaze.entities.*;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -30,16 +32,18 @@ public class Model
             playerPosition.setColumn(random.nextInt(maze[0].length));
         } while (!maze[playerPosition.getRow()][playerPosition.getColumn()].canStep());
         //hero = new Hero(playerPosition, new Direction(Direction.Type.NORTH));
-        hero = new Hero(new Position(1, 3), new Direction(Direction.Type.EAST));
+        hero = new Hero(new Position(22, 1), new Direction(Direction.Type.NORTH));
     }
 
 
     private void readMaze(String mazeName)
     {
-        File mazeFile = new File(getClass().getResource(mazeName).getFile());
+        //File mazeFile = new File(getClass().getClassLoader().getResource(mazeName).getFile());
+        InputStream mazeStream = getClass().getResourceAsStream(mazeName);
         try
         {
-            BufferedReader reader = new BufferedReader(new FileReader(mazeFile));
+            //BufferedReader reader = new BufferedReader(new FileReader(mazeFile));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(mazeStream));
             ArrayList<Tile[]> tilesList = new ArrayList<>();
             String nextLine;
             int lineCounter = 0;

@@ -1,4 +1,7 @@
-package com.andry.consolemaze;
+package com.andry.consolemaze.entities;
+
+import com.andry.consolemaze.Direction;
+import com.andry.consolemaze.Position;
 
 public abstract class Tile extends MazeEntity
 {
